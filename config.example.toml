@@ -1,0 +1,32 @@
+# Copy to config.toml, fill in, then run:  python3 bin/init_workspace.py --config config.toml --dest ~/repos/my-agent
+# Every value here is substituted into the template as {{KEY}} (upper-case key name).
+# config.toml is gitignored in the framework repo. Never commit a filled-in copy.
+
+[agent]
+name        = "Atlas"          # {{AGENT_NAME}}   display name of your main agent
+short       = "ATL"            # {{AGENT_SHORT}}  2-4 letter handle used in tags and filenames
+emoji       = "🧭"             # {{AGENT_EMOJI}}
+tagline     = "Chief of staff for one person."   # {{AGENT_TAGLINE}}
+
+[principal]
+name        = "Alex"           # {{PRINCIPAL_NAME}}  the person the agent works for
+full_name   = "Alex Example"   # {{PRINCIPAL_FULL_NAME}}
+email       = "alex@example.com"      # {{PRINCIPAL_EMAIL}}
+phone       = "+15555550100"          # {{PRINCIPAL_PHONE}} E.164, used only by the message allowlist
+timezone    = "America/New_York"      # {{TIMEZONE}} IANA name
+profile     = "work"           # {{PROFILE}}  "work" or "personal"; picks default modules
+
+[workspace]
+path        = "/Users/alex/repos/my-agent"   # {{WORKSPACE_PATH}} absolute path of the instantiated workspace
+os_user     = "alex"                         # {{OS_USER}} used as the Keychain account name
+
+[comms]
+# Trusted senders: the ONLY addresses / numbers whose messages are ever shown to an LLM.
+# Everything else is dropped deterministically before any model sees it.
+trusted_senders = ["alex@example.com", "+15555550100"]   # {{TRUSTED_SENDERS}} (JSON list)
+quiet_hours_start = 20         # {{QUIET_START}} no outbound messages from this hour...
+quiet_hours_end   = 9          # {{QUIET_END}}   ...until this hour (local time)
+
+[modules]
+# Optional subagent modules copied from modules/. See docs/modules.md.
+enabled = ["librarian", "research", "ghostwriter", "inbox-triage"]

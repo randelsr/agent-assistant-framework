@@ -1,0 +1,23 @@
+#!/usr/bin/expect -f
+# Runs claude for the Messages session and answers the one-time
+# "Loading development channels" warning that
+# --dangerously-load-development-channels shows on every start (only needed when
+# the channel plugin is a local fork rather than an approved marketplace
+# channel). After the warning, the user's terminal is handed straight through
+# (interact). With a marketplace channel the warning never appears and the
+# timeout branch just continues.
+#
+# The TUI draws words with cursor-move escapes instead of spaces, so match
+# single words. Raw mode up front so terminal replies (e.g. ^[[?1;2c) and
+# keystrokes are not echoed as junk while we wait.
+stty raw -echo
+set timeout 60
+spawn {*}$argv
+expect {
+  -re {development.*channels.*confirm} { sleep 0.5; send "\r" }
+  timeout { send_user "\n\[agent-messages-run] dev-channel warning not seen within 60s, continuing\n" }
+  eof { catch wait r; exit [lindex $r 3] }
+}
+interact
+catch wait r
+exit [lindex $r 3]

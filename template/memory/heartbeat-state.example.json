@@ -1,0 +1,18 @@
+{
+  "lastUpdated": "YYYY-MM-DDTHH:MM:SS+00:00",
+  "lastHeartbeatFire": 0,
+  "lastSessionStart": 0,
+  "lastOpsTurnOk": 0,
+  "lastCronRecreate": 0,
+  "consecutiveOk": 0,
+  "lastChecks": {
+    "daily_digest": null,
+    "memory_gc_weekly": null,
+    "librarian_weekly": null,
+    "research_weekly": null,
+    "inbox_triage": null,
+    "calendar": null,
+    "missions": null
+  },
+  "notes": "Copy to heartbeat-state.json (gitignored). Hooks own lastUpdated, lastHeartbeatFire, lastSessionStart, lastOpsTurnOk and pendingRecovery; Ops owns the rest. Epoch fields are Unix seconds."
+}

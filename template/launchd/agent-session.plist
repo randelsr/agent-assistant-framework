@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Auto-restart LaunchAgent for a long-lived {{AGENT_NAME}} Claude Code session.
+  Runs scripts/agent-session.sh, which resumes the most recent conversation in
+  this workspace under a pseudo-tty and is relaunched whenever it exits.
+
+  Install:
+    cp launchd/agent-session.plist ~/Library/LaunchAgents/{{LAUNCHD_LABEL}}.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/{{LAUNCHD_LABEL}}.plist
+  Stop / uninstall:
+    launchctl bootout gui/$(id -u)/{{LAUNCHD_LABEL}}
+
+  IMPORTANT: exit any manually run `claude` session in this workspace BEFORE
+  bootstrapping, or two sessions will fight over the same --continue.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>{{LAUNCHD_LABEL}}</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>{{WORKSPACE_PATH}}/scripts/agent-session.sh</string>
+  </array>
+
+  <!-- Start on load/login, and keep it alive: relaunch whenever it exits. -->
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <!-- Wait 20s between relaunches so a crash loop can't thrash. -->
+  <key>ThrottleInterval</key>
+  <integer>20</integer>
+
+  <key>WorkingDirectory</key>
+  <string>{{WORKSPACE_PATH}}</string>
+
+  <!-- launchd's own stdout/stderr for the wrapper (not the Claude session). -->
+  <key>StandardOutPath</key>
+  <string>{{WORKSPACE_PATH}}/.claude/launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{WORKSPACE_PATH}}/.claude/launchd.err.log</string>
+</dict>
+</plist>

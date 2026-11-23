@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Edit(/{{WORKSPACE_PATH}}/config/workspace.json)",
+      "Write(/{{WORKSPACE_PATH}}/config/workspace.json)",
+      "Edit(/{{WORKSPACE_PATH}}/memory/inbox-filter/allowlist.json)",
+      "Write(/{{WORKSPACE_PATH}}/memory/inbox-filter/allowlist.json)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{{WORKSPACE_PATH}}/scripts/log-conversation.py\"",
+            "async": true,
+            "timeout": 30,
+            "statusMessage": "Logging conversation"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{{WORKSPACE_PATH}}/scripts/ops-turn-ok.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{{WORKSPACE_PATH}}/scripts/heartbeat-stamp.py\"",
+            "async": true,
+            "timeout": 5,
+            "statusMessage": "Heartbeat stamp"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{{WORKSPACE_PATH}}/scripts/ops-freshness.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{{WORKSPACE_PATH}}/scripts/session-start.py\"",
+            "timeout": 10,
+            "statusMessage": "Session start: role and cron check"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Local Claude Code state
+.claude/settings.local.json
+.claude/*.log
+.claude/scheduled_tasks.lock
+
+# Verbatim conversation logs (7-day rolling, PII)
+memory/conversations/*
+!memory/conversations/.gitkeep
+
+# Heartbeat state: rewritten every few minutes, plus backups and forensics
+memory/heartbeat-state.json
+memory/.heartbeat-state.json.bak
+memory/.heartbeat-state.corrupt.*.json
+memory/.heartbeat-state.*.tmp
+
+# Inbox filter: fetched email content + per-message state stay local (PII)
+memory/inbox-filter/inbox/
+memory/inbox-filter/state.json
+memory/inbox-filter/*.tmp
+
+# Scoped send: drafted bodies stay local; the sent ledger is tracked
+memory/send-outbox/*.md
+
+# Channel plugin upstream diff (regenerated daily)
+plugins/upstream/pending.diff
+
+# The framework's input file, if someone copies it in here
+config.toml
