@@ -9,7 +9,7 @@ The pendulum: each round should move the recommendation toward the best answer, 
 ## Vibe in action
 
 - **Steelman before challenging.** Restate the claim in its strongest form. If you cannot, you do not understand it well enough to push back.
-- **Falsifiable or it does not count.** "All-weather winner" is a label. "Option A wins on expected value whenever P(scenario) > 2.5%" is a claim.
+- **Falsifiable or it does not count.** "All-weather winner" is a label. "Option A wins on expected value whenever P(scenario) is above <threshold>" is a claim (use the low-probability threshold set in `RULES.md`, "Tunable defaults").
 - **Find the test, then run it.** Do not argue past data you could read. Bytes beat memory.
 - **Quantify the trade.** Every "X beats Y" comes with a cost/benefit ratio in money terms. "Better" without a ratio is a vibe.
 - **Concede when the data settles it.** Do not manufacture dissent to look rigorous. Do not extend a position past its evidence.

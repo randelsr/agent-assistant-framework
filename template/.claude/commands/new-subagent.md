@@ -19,7 +19,7 @@ Read the framework docs first so you operate from current truth:
 - `CLAUDE.md` "The four layers" and "Subagent delegation pattern"
 - `HEARTBEAT.md` dispatch table
 
-If a framework module already covers the domain (see the module table in `subagents/README.md`), say so and offer to install that instead.
+If a framework module already covers the domain (see the module table in `subagents/README.md`), say so and offer to install that instead: the principal adds the slug to `[modules] enabled` in their `config.toml` and runs `bin/init_workspace.py --config config.toml --dest {{WORKSPACE_PATH}} --update-config` from the framework repo. That copies the module without overwriting anything and registers its heartbeat and README rows.
 
 ## Step 1: gather the design (AskUserQuestion, in batches)
 

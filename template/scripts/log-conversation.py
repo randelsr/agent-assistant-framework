@@ -36,7 +36,7 @@ SIG_KEYS = ("file_path", "command", "url", "skill", "query", "subject", "descrip
 
 
 def parse_timestamp(ts: str) -> datetime:
-    """Parse '2026-05-05T02:49:00.297Z' into a local, DST-aware datetime."""
+    """Parse '2030-01-15T12:00:00.000Z' into a local, DST-aware datetime."""
     if ts.endswith("Z"):
         ts = ts[:-1] + "+00:00"
     return datetime.fromisoformat(ts).astimezone(LOCAL_TZ)

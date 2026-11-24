@@ -31,14 +31,14 @@ The Librarian does not self-trigger.
 
 ## Submissions inbox protocol
 
-**Filename:** `subagents/librarian/submissions/<source-agent>-<YYYY-MM-DD>-<slug>.md`. The main agent uses `main` as its source slug.
+**Filename:** `subagents/librarian/submissions/<source-agent>-<YYYY-MM-DD>-<slug>.md`. The main agent uses `{{AGENT_SHORT_LOWER}}` (its short handle, lower-case) as its source slug.
 
 **Required frontmatter:**
 
 ```yaml
 ---
 type: submission
-source_agent: <slug>             # main, research, health-advisor, ...
+source_agent: <slug>             # {{AGENT_SHORT_LOWER}} (main agent), research, health-advisor, ...
 submitted_at: YYYY-MM-DD
 proposed_path: wiki/<path>.md    # where the source thinks it belongs
 content_type: <entity|concept|topic|initiative|archive|index-update|cross-reference|frontmatter|other>

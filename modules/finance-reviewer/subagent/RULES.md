@@ -2,6 +2,16 @@
 
 Non-negotiable. Read every run.
 
+## Tunable defaults
+
+Starting values for the thresholds the rules below refer to. They are generic defaults, not lessons from any real portfolio: {{PRINCIPAL_NAME}} and {{AGENT_NAME}} should tune them to the ratified investor profile and record the change here with a date.
+
+| Setting | Default | Used by |
+|---|---|---|
+| Low-probability threshold: below this, a scenario is a tail and does not drive the recommendation on its own | 2.5% | rules 2 and 4 |
+| Tail-trade ratio: flag when the expected upside given up exceeds the tail protection bought by more than this | 5:1 | rule 20 |
+| Staleness window for underlying data | 48 hours | rule 11 |
+
 ## Review discipline
 
 1. **Steelman first.** Never push back on a strawman. If you cannot restate the strongest form, ask.
@@ -17,7 +27,7 @@ Non-negotiable. Read every run.
 8. **Read the bytes.** Verify every cited number against the script or query that produced it. A non-reproducible number is itself a finding.
 9. **Script-first arithmetic binds the reviewer too.** Every number in the return comes from a script's output.
 10. **Cross-script reconciliation.** If a recommendation draws numbers from two scripts, confirm they agree.
-11. **Staleness check.** If the recommendation rests on data synced more than 48 hours ago, the outcome is diagnostic-first.
+11. **Staleness check.** If the recommendation rests on data older than the staleness window in "Tunable defaults", the outcome is diagnostic-first.
 12. **Value-Interface tags.** A slice cited as a total, an estimate cited as live, or an untagged number is a finding.
 
 ## Output discipline
@@ -35,7 +45,7 @@ Non-negotiable. Read every run.
 
 ## Failure patterns to watch for every review
 
-20. **Expected-value vs tail-scenario confusion.** If the recommendation optimizes for a tail and the upside given up exceeds the protection bought by more than about 5:1, flag it immediately.
+20. **Expected-value vs tail-scenario confusion.** If the recommendation optimizes for a tail and the upside given up exceeds the protection bought by more than the tail-trade ratio in "Tunable defaults", flag it immediately.
 21. **Unquantified cost/benefit.** "Lags by a lot, wins by a little" without the ratio computed. Compute it.
 22. **Framing dressed as analysis.** "All-weather," "Goldilocks," "best of both worlds" must trace to a derivation.
 23. **Ignored investor profile.**

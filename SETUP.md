@@ -1,6 +1,6 @@
 # Setup
 
-About an hour for the core and another hour per optional piece. Run every command from your instantiated workspace unless a step says otherwise.
+About an hour for the core and another hour per optional piece. Run the init commands in step 1 from this framework repo; run everything else from your instantiated workspace.
 
 ## 1. Instantiate
 
@@ -20,7 +20,20 @@ python3 bin/init_workspace.py --config config.toml --dest /absolute/path/from/co
 python3 bin/init_workspace.py --config config.toml --dest /absolute/path/from/config
 ```
 
-The init script refuses to finish if any `{{PLACEHOLDER}}` is left unfilled.
+The init script needs Python 3.9+; on 3.9 and 3.10 run `pip3 install --user tomli` first. It refuses to finish if any `{{PLACEHOLDER}}` is left unfilled.
+
+### Changing settings later
+
+Edit `config.toml` and run, from this repo:
+
+```bash
+python3 bin/init_workspace.py --config config.toml --dest /absolute/path/from/config --update-config --dry-run
+python3 bin/init_workspace.py --config config.toml --dest /absolute/path/from/config --update-config
+```
+
+This rewrites `config/workspace.json` (old copy kept as `config/workspace.json.bak`, Messages session id preserved), regenerates `.claude/settings.json`, the launchd plist and the Messages prompt only if you haven't edited them (otherwise it writes a `.new` copy beside them), and installs any module you newly enabled without overwriting an existing file. Your `USER.md`, `IDENTITY.md`, `MEMORY.md`, `memory/` and `wiki/` are never touched. Details: [docs/scripts.md](docs/scripts.md).
+
+**Do not use `--force` for this.** `--force` re-runs the full init and overwrites every template file, including `USER.md`, `IDENTITY.md`, `SOUL.md`, `MEMORY.md`, `memory/missions.md` and the wiki seeds. It is only for redoing a workspace you haven't personalized yet.
 
 Put the new workspace in a **private** git repo. It will hold personal data from day one.
 
@@ -48,7 +61,7 @@ The framework splits the agent across two long-lived Claude Code sessions in the
 | **Admin** | Your conversation thread. Runs no crons. |
 | **Ops** | Runs the heartbeat cron and every scheduled job. It hands anything you need to see to Admin with tags like `[CHECKIN]`, `[FYI]` and `[URGENT]`, so you never see heartbeat traffic. |
 
-Start Ops with the prompt "You are {{AGENT_NAME}} Ops." The SessionStart hook checks the role and tells Ops to create the heartbeat cron if it's missing. Session-scoped crons expire, typically after about 7 days, and the heartbeat recreates them before then. See [docs/heartbeat.md](docs/heartbeat.md).
+Start Ops with the prompt "You are <agent name> Ops." (your `[agent] name`, e.g. "You are Atlas Ops."). The SessionStart hook checks the role and tells Ops to create the heartbeat cron if it's missing. Session-scoped crons expire, typically after about 7 days, and the heartbeat recreates them before then. See [docs/heartbeat.md](docs/heartbeat.md).
 
 Optional thread-mode agents (any module can enable it) run as their own sessions:
 
@@ -56,7 +69,7 @@ Optional thread-mode agents (any module can enable it) run as their own sessions
 claude --agent <slug>
 ```
 
-You talk to them directly. They put anything proactive in `subagents/<slug>/outbox.md` for Admin to pass on. See `template/subagents/THREADS.md`.
+You talk to them directly. They put anything proactive in `subagents/<slug>/outbox.md` for Admin to pass on. See `subagents/THREADS.md` in your workspace.
 
 ## 4. Hooks
 
@@ -65,7 +78,7 @@ You talk to them directly. They put anything proactive in `subagents/<slug>/outb
 - **Stop**: logs the conversation to `memory/conversations/` on a 7-day rolling basis (gitignored), and stamps whether the Ops turn succeeded.
 - **UserPromptSubmit**: heartbeat freshness stamps.
 
-All paths come from `config/workspace.json`, which the init script wrote. See [docs/scripts.md](docs/scripts.md).
+The hook commands use the absolute workspace path written in at init (if you move the workspace, update `[workspace] path` and run `--update-config`). The scripts they call read everything else from `config/workspace.json`. See [docs/scripts.md](docs/scripts.md).
 
 ## 5. Optional pieces
 
@@ -109,6 +122,6 @@ When the agent gets something wrong, tell it the rule. Rules you state go in `US
 
 ## Work profile tips
 
-- Enable these modules: `meeting-prep`, `project-tracker`, `research`, `ghostwriter`, `inbox-triage`.
+- Enable these modules: `meeting-prep`, `project-tracker`, `ghostwriter`, `inbox-triage` (`librarian` and `research` are always installed).
 - Seed `wiki/stakeholders/` with the 10 to 20 people you work with most, and `wiki/projects/` with what's in flight.
 - Check your employer's policy before connecting work email or calendar. Read-only scopes and a strict allowlist are the floor. Keep confidential employer material out of any repo that leaves your work machine.

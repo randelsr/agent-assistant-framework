@@ -12,7 +12,9 @@
     "research_weekly": null,
     "inbox_triage": null,
     "calendar": null,
-    "missions": null
+    "missions": null,
+    "login_reminder": null,
+    "login_manual": null
   },
   "notes": "Copy to heartbeat-state.json (gitignored). Hooks own lastUpdated, lastHeartbeatFire, lastSessionStart, lastOpsTurnOk and pendingRecovery; Ops owns the rest. Epoch fields are Unix seconds."
 }

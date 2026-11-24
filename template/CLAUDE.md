@@ -97,7 +97,7 @@ Nothing routine crosses sessions: no `HEARTBEAT_OK`, no "dispatched X", no "no c
 
 | Writer | Owns |
 |---|---|
-| {{AGENT_SHORT}} (Admin and Ops, split per `HEARTBEAT.md`) | `raw/journal/`, `memory/`, `MEMORY.md`, `USER.md`, `CLAUDE.md`, `HEARTBEAT.md`, `TOOLS.md` |
+| {{AGENT_SHORT}} (Admin and Ops, split per `HEARTBEAT.md`) | `raw/journal/`, `memory/`, `MEMORY.md`, `USER.md`, `CLAUDE.md`, `HEARTBEAT.md`, `TOOLS.md`, plus its own Librarian submissions (`subagents/librarian/submissions/{{AGENT_SHORT_LOWER}}-*.md`) |
 | Each subagent | `subagents/<name>/**` plus its own Librarian submissions (`subagents/librarian/submissions/<name>-*.md`) |
 | The Librarian | `wiki/` |
 
@@ -204,7 +204,7 @@ status: <active|paused|done|wound-down|maintained|parked|...>
 
 ## Wiki operations
 
-All wiki writes go through the Librarian. {{AGENT_SHORT}} drops a submission into `subagents/librarian/submissions/<source>-YYYY-MM-DD-<slug>.md` and dispatches the Librarian when anything time-relevant is queued. Draining that queue never needs the principal's approval.
+All wiki writes go through the Librarian. {{AGENT_SHORT}} drops a submission into `subagents/librarian/submissions/{{AGENT_SHORT_LOWER}}-YYYY-MM-DD-<slug>.md` (subagents use their own slug as the prefix) and dispatches the Librarian when anything time-relevant is queued. Draining that queue never needs the principal's approval.
 
 ### Ingest
 
@@ -278,7 +278,7 @@ Route by lens: *who is the subject?*
 
 ## Value-Interface Schema (data-integrity contract)
 
-**Never pass a loose value.** Every load-bearing number carries the context that makes it unambiguous, across the main agent, every subagent, digests, scripts and messages. Full spec and rationale: `docs/value-schema.md` in the framework repo. Summary:
+**Never pass a loose value.** Every load-bearing number carries the context that makes it unambiguous, across the main agent, every subagent, digests, scripts and messages. Full spec and rationale: [`docs/value-schema.md`](docs/value-schema.md) (this workspace ships a copy of the framework docs in `docs/`). Summary:
 
 | Field | Meaning | The bug it kills |
 |---|---|---|

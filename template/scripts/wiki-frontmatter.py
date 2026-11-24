@@ -32,7 +32,7 @@ WORKSPACE = wc.ROOT
 WIKI = WORKSPACE / "wiki"
 TYPE_BY_DIR = {
     "people": "person",
-    "stakeholders": "person",
+    "stakeholders": "stakeholder",
     "organizations": "organization",
     "projects": "project",
     "initiatives": "initiative",

@@ -30,12 +30,6 @@ The content catalog for {{PRINCIPAL_NAME}}'s world and the navigation root for e
 
 Module-owned folders (for example `health/`, `finance/`, `topics/`) are added by the Librarian when a module that needs them is installed. Each gets a row in the folder map and its own section below.
 
-## Concepts
-
-| Page | Summary |
-|------|---------|
-| [concepts/voice.md](concepts/voice.md) | How the principal writes. Ghostwriter calibration source; fill it in first. |
-
 ## People
 
 | Page | Summary |
@@ -70,7 +64,7 @@ Module-owned folders (for example `health/`, `finance/`, `topics/`) are added by
 
 | Page | Summary |
 |------|---------|
-| *(none yet)* | |
+| [concepts/voice.md](concepts/voice.md) | How the principal writes. Ghostwriter calibration source; fill it in first. |
 
 ## Archive
 

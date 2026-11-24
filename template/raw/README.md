@@ -12,7 +12,8 @@ The source-of-truth layer. Agents **read** from here and **never modify** what i
 | `docs/` | Documents the principal shares: specs, decks, contracts, policies, offer letters. Keep original filenames plus a date prefix. | {{AGENT_SHORT}} |
 | `meetings/YYYY-MM-DD-<slug>.md` | Meeting notes and transcripts. | {{AGENT_SHORT}} |
 | `voice/YYYY-MM-DD-<slug>.{m4a,txt,vtt}` | Voice memos and recordings with local machine transcripts. The audio is the source; transcripts are lossy (no speaker labels, garbled names). Re-listen via the `.vtt` timestamps before quoting anything load-bearing. | {{AGENT_SHORT}} |
-| `<module>/` | Module-specific sources, for example `finance/` (statements, plan documents), `medical/` (records, labs), `pets/` (vet records). These hold PII; mark them CONFIDENTIAL and consider gitignoring them. Extractions live in the owning subagent's folder or the wiki, never back here. | {{AGENT_SHORT}} |
+| `writings/` | Verbatim originals of pieces the principal has published (the Ghostwriter's deeper voice samples). One page each in `wiki/writings/`. | {{AGENT_SHORT}} |
+| `<module>/` | Module-specific sources, for example `finance/` (statements, plan documents), `medical/` (records, labs), `veterinary/<animal>/` (vet records). These hold PII; mark them CONFIDENTIAL and consider gitignoring them. Extractions live in the owning subagent's folder or the wiki, never back here. | {{AGENT_SHORT}} |
 
 ## Journal entry format
 

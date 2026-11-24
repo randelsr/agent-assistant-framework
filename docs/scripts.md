@@ -1,20 +1,37 @@
 # Scripts
 
-Every script in a workspace lives in `scripts/` and reads its settings at runtime from `config/workspace.json`. Nothing personal is baked into code. `bin/init_workspace.py` writes that file from your `config.toml`. To change a value later, edit `config.toml` and re-run init with `--force`, or edit `config/workspace.json` by hand. The model can't edit it: `.claude/settings.json` denies Edit and Write on it.
+Every script in a workspace lives in `scripts/` and reads its settings at runtime from `config/workspace.json`. Nothing personal is baked into code. `bin/init_workspace.py` writes that file from your `config.toml`. The model can't edit it: `.claude/settings.json` denies Edit and Write on it.
 
-The scripts need only the macOS system `python3` (3.9+) and the standard library. `bin/init_workspace.py` needs Python 3.11+ because it uses `tomllib`.
+**Changing a setting later.** Edit `config.toml`, then run, from the framework repo:
+
+```
+python3 bin/init_workspace.py --config config.toml --dest <workspace> --update-config --dry-run   # preview
+python3 bin/init_workspace.py --config config.toml --dest <workspace> --update-config
+```
+
+`--update-config` is safe on a personalized workspace. It:
+- rewrites `config/workspace.json` (the previous copy is kept as `config/workspace.json.bak`) and keeps the existing `messages.session_id`, so the Messages session resumes the same conversation;
+- regenerates the files that are pure template plus config (`.claude/settings.json`, `launchd/agent-session.plist`, `scripts/agent-messages-prompt.md`), but only if you have not edited them. An edited one is left alone, and the new version is written next to it as `<file>.new` for you to merge;
+- installs modules you newly enabled (`subagents/<slug>/`, `.claude/agents/<slug>.md`), copying only files that don't exist yet, and adds their rows to the `HEARTBEAT.md` dispatch table and the `subagents/README.md` "Installed subagents" table;
+- never overwrites anything else (`USER.md`, `IDENTITY.md`, `SOUL.md`, `MEMORY.md`, `memory/`, `wiki/`, module files) and never deletes. A module you disabled stays installed; remove it by hand.
+
+Hand edits to `config/workspace.json` are replaced on the next `--update-config`, so put lasting changes in `config.toml`. For a quick one-off you can still edit `config/workspace.json` by hand.
+
+> **Warning: `--force` is not a settings update.** It re-runs the full init over the existing folder and **overwrites every template file**, including `USER.md`, `IDENTITY.md`, `SOUL.md`, `MEMORY.md`, `memory/missions.md`, the wiki seeds and every subagent's `MEMORY.md`. Use it only on a workspace you have not personalized yet. (It does keep the Messages session id.)
+
+The scripts need only the macOS system `python3` (3.9+) and the standard library. `bin/init_workspace.py` also runs on Python 3.9+; on 3.9 and 3.10 install `tomli` first (`pip3 install --user tomli`), since `tomllib` is built in only from 3.11.
 
 ## How config reaches the scripts
 
 ```
 config.toml  --(bin/init_workspace.py)-->  config/workspace.json  --(scripts/workspace_config.py)-->  every script
-             \--> `{{...}}` placeholders in text files: settings.json, launchd plist, prompts, docs
+             \--> `{{...}}` placeholders in the template's text files (substituted once, at init)
 ```
 
 - `scripts/workspace_config.py` is the shared loader. It finds the workspace root as the parent of `scripts/`, so you can move the workspace without editing anything. Set `AGENT_WORKSPACE` to point a script at another workspace, for tests.
 - Hooks never crash a session. If config is missing, they fall back to safe defaults.
 - The optional pieces (inbox filter, scoped send, messaging bridge) refuse to run until their config keys are set. They are off by default.
-- `{{...}}` placeholders appear only in non-script text: `.claude/settings.json`, `launchd/agent-session.plist` and `scripts/agent-messages-prompt.md`. Init substitutes them, and it fails without writing anything if one is left over.
+- `{{...}}` placeholders never appear in script code; scripts read `config/workspace.json` instead. They appear in the template's text files: the root scaffolding (`CLAUDE.md`, `HEARTBEAT.md`, `USER.md`, `IDENTITY.md` and the rest), `memory/`, `raw/README.md`, the wiki seeds, every core and module subagent file and `.claude/agents/*.md`, `.claude/commands/new-subagent.md`, plus the three config-derived files `.claude/settings.json`, `launchd/agent-session.plist` and `scripts/agent-messages-prompt.md`. Init substitutes them all, and fails without writing anything if one is left over. The copy of these docs in a workspace's `docs/` is not substituted, so placeholder examples in it stay literal.
 
 ### workspace.json layout
 
@@ -25,7 +42,7 @@ config.toml  --(bin/init_workspace.py)-->  config/workspace.json  --(scripts/wor
 | `workspace.path / os_user / launchd_label / claude_path` | `[workspace]` | launchers. `os_user` is the Keychain account |
 | `comms.trusted_senders` | `[comms]` | inbox filter (email entries). The messaging channel plugin enforces phone entries |
 | `comms.quiet_hours_start / end` | `[comms]` | scoped send, Messages prompt |
-| `modules.enabled` | `[modules]` | informational |
+| `modules.enabled` | `[modules]` | informational; `--update-config` compares it to find newly enabled modules |
 | `inbox.*` | optional `[inbox]` | `inbox-filter.py` |
 | `send_email.*` | optional `[send_email]` | `scoped-send-email.py` |
 | `messages.*` | optional `[messages]` | messaging bridge |
@@ -51,7 +68,7 @@ UserPromptSubmit ignores `matcher`, so each hook filters on the heartbeat prompt
 
 | Script | Use |
 |---|---|
-| `login-age.py` | Prints JSON with the age of the last `/login` and whether a re-login reminder is due. The heartbeat calls it so the principal can re-login before a long-running session expires. You can tune `heartbeat.login_reminder_days` and `login_expiry_days`. |
+| `login-age.py` | Prints JSON with the age of the last `/login` and whether a re-login reminder is due. The heartbeat calls it every run (`HEARTBEAT.md`, "Login age") so the principal can re-login before a long-running session expires; Ops stamps `lastChecks.login_reminder` after reminding. You can tune `heartbeat.login_reminder_days` and `login_expiry_days`. |
 
 ## Email: deterministic filter, then a model
 
@@ -89,11 +106,19 @@ A deterministic phishing check that no model is involved in. A link is followed 
 
 The fetch is anonymous: no cookies, no credentials, no JavaScript. Pages are reduced to text, and login or payment pages are flagged. Click-tracker links resolve only when they land on the domain the link text showed.
 
-Add the brands your principal is likely to be phished with (employer, bank, payroll, school) under `link_check.extra_brands`:
+Add the brands your principal is likely to be phished with (employer, bank, payroll, any institution that mails them often) under `link_check.extra_brands`:
 
 ```json
 "link_check": {"extra_brands": {"examplecorp": ["examplecorp.com"]}}
 ```
+
+The domain comparison uses a small built-in heuristic for registrable domains (`example.com`, `example.co.uk`). If senders you trust use a deeper multi-label suffix, list its shape in `link_check.registrable_domain_patterns` (empty by default). Each `*` matches one label:
+
+```json
+"link_check": {"registrable_domain_patterns": ["*.lib.*.us"]}
+```
+
+With that pattern, `www.springfield.lib.xx.us` and `events.springfield.lib.xx.us` count as the same site.
 
 Spot check: `python3 scripts/link_check.py URL [ANCHOR_TEXT]`.
 
@@ -124,6 +149,8 @@ It uses the OAuth client in `send_email.credentials_path` (default: gog's `crede
 | `agent-messages-prompt.md` | The session's system prompt, with placeholders filled at init. It covers routing, pass-through to Admin, quiet hours and the logging format. |
 | `messages_config.py` | Prints the bridge and launcher settings as shell assignments for `eval`. Prints nothing and exits non-zero if the config is incomplete. |
 | `channel-upstream-check.sh` | Optional daily diff of a forked channel plugin against its upstream snapshot. It never edits the fork. |
+
+Items the Messages session passes through to Admin are logged under `## For Admin` in `memory/messages-log.md` with a `#fwd-<id>`. Admin or Ops records receipt in `memory/messages-acks.md`, and Ops re-forwards anything still unacknowledged after 15 minutes (`HEARTBEAT.md`, "Every heartbeat" step 8).
 
 Config:
 

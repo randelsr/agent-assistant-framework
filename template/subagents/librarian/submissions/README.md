@@ -8,14 +8,14 @@
 <source-agent>-<YYYY-MM-DD>-<slug>.md
 ```
 
-Examples: `research-2025-01-06-topic-update.md`, `main-2025-01-06-new-client.md`, `project-tracker-2025-01-06-status-roll-up.md`.
+Examples: `research-2025-01-06-topic-update.md`, `{{AGENT_SHORT_LOWER}}-2025-01-06-new-client.md` (the main agent uses its short handle, lower-case), `project-tracker-2025-01-06-status-roll-up.md`.
 
 ## Required frontmatter
 
 ```yaml
 ---
 type: submission
-source_agent: <slug>             # main, research, health-advisor, project-tracker, ...
+source_agent: <slug>             # {{AGENT_SHORT_LOWER}} (main agent), research, health-advisor, project-tracker, ...
 submitted_at: YYYY-MM-DD
 proposed_path: wiki/<path>.md    # the Librarian may choose a better one
 content_type: <entity|concept|topic|initiative|archive|index-update|cross-reference|frontmatter|other>

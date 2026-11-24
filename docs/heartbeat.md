@@ -38,6 +38,10 @@ and stamps `lastChecks[key] = now` after firing. That rule is **self-correcting*
 
 Interval rows (for example inbox triage every 15 minutes) use `now - lastChecks[key] >= interval` instead.
 
+The workspace's `HEARTBEAT.md` ships with the core rows in the table and one commented `module:<slug>` row per scheduled module trigger below it. `bin/init_workspace.py` (and `--update-config`, for a module enabled later) moves the rows of every enabled module into the table, so the table always matches what is installed.
+
+Besides the table, every heartbeat also runs two cheap checks: `scripts/login-age.py`, which says when the principal should re-run `/login` before a long-running session's login expires, and, if the messaging bridge is configured, a re-forward of any pass-through item Admin has not acknowledged within 15 minutes.
+
 ## Self-healing
 
 Recurring crons created by the tool **auto-expire after 7 days.** A heartbeat that does not maintain itself dies silently a week after setup. So every heartbeat:

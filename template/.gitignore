@@ -30,3 +30,6 @@ plugins/upstream/pending.diff
 
 # The framework's input file, if someone copies it in here
 config.toml
+
+# Previous config kept by init_workspace.py --update-config
+config/workspace.json.bak

@@ -43,13 +43,15 @@ Details in [docs/modules.md](docs/modules.md). New ones are made with the `/new-
 
 ## Quick start
 
-Requirements: macOS (the launchd, Keychain and Messages pieces are macOS-specific; the rest runs anywhere), Python 3.11+, git, and [Claude Code](https://claude.com/claude-code).
+Requirements: macOS (the launchd, Keychain and Messages pieces are macOS-specific; the rest runs anywhere), Python 3.9+ (on 3.9 and 3.10, also `pip3 install --user tomli`; the macOS system `python3` works), git, and [Claude Code](https://claude.com/claude-code).
 
 ```bash
 cp config.example.toml config.toml        # fill it in
 python3 bin/init_workspace.py --config config.toml --dest ~/repos/my-agent --dry-run
 python3 bin/init_workspace.py --config config.toml --dest ~/repos/my-agent
 ```
+
+To change a setting later, edit `config.toml` and re-run with `--update-config` (never `--force`, which overwrites your personalized files). See [docs/scripts.md](docs/scripts.md).
 
 Then follow [SETUP.md](SETUP.md): first session, personalizing the identity and user contract, starting the Ops session and heartbeat, and the optional pieces (email filter, messaging bridge, voice transcription).
 

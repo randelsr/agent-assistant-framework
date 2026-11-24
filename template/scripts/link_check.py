@@ -16,11 +16,20 @@ mailto, images).
 Local additions (config/workspace.json, optional):
   "link_check": {
     "extra_brands": {"yourcompany": ["yourcompany.com", "yourcompany.net"]},
-    "extra_risky_suffixes": ["example-freehost.com"]
+    "extra_risky_suffixes": ["example-freehost.com"],
+    "registrable_domain_patterns": ["*.lib.*.us"]
   }
 Add the brands your principal is most likely to be phished with: their employer,
-their bank, their school district, their payroll provider. A host that looks
-like one of these but is not on its official list fails.
+their bank, their payroll provider, any institution that emails them often. A
+host that looks like one of these but is not on its official list fails.
+
+registrable_domain_patterns (empty by default) teaches the domain comparison
+about multi-label public suffixes that this script's built-in heuristic gets
+wrong. Each pattern is dot-separated labels where "*" matches exactly one
+label; a host whose trailing labels match is treated as one site at that many
+labels. Example: with "*.lib.*.us", www.springfield.lib.xx.us and
+events.springfield.lib.xx.us are the same site (springfield.lib.xx.us), while
+a different library under lib.xx.us is not.
 
 CLI (for spot checks):  link_check.py URL [ANCHOR_TEXT]
 """
@@ -71,6 +80,10 @@ OFFICIAL = {
 for _b, _doms in (wc.get("link_check.extra_brands", {}) or {}).items():
     OFFICIAL[str(_b).lower()] = [str(d).lower() for d in _doms]
 BRANDS = list(OFFICIAL)
+# Optional multi-label suffix shapes (see module docstring). Longest first.
+DOMAIN_PATTERNS = sorted(
+    (str(p).lower().strip(".").split(".") for p in (wc.get("link_check.registrable_domain_patterns", []) or []) if str(p).strip(".")),
+    key=len, reverse=True)
 # Short or common words that appear inside unrelated hostnames.
 NO_SUBSTRING_MATCH = {"office", "chase", "zoom", "okta", "slack", "apple"}
 
@@ -85,9 +98,10 @@ LOGIN_WORDS = re.compile(r"\b(sign in|log ?in|password|verify your account|confi
 def reg_domain(host):
     """Approximate registrable domain without a public-suffix list."""
     parts = host.split(".")
-    # US school districts: <district>.k12.<state>.us
-    if len(parts) >= 4 and parts[-1] == "us" and parts[-3] == "k12":
-        return ".".join(parts[-4:])
+    for pat in DOMAIN_PATTERNS:
+        n = len(pat)
+        if len(parts) >= n and all(want in ("*", got) for want, got in zip(pat, parts[-n:])):
+            return ".".join(parts[-n:])
     if len(parts) >= 3 and len(parts[-1]) == 2 and parts[-2] in ("co", "com", "org", "net", "gov", "edu", "ac"):
         return ".".join(parts[-3:])
     return ".".join(parts[-2:])

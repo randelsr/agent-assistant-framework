@@ -75,10 +75,12 @@ Core modules are always installed. Optional modules are chosen in `config.toml` 
 | `pet-care` | Animal health records, check-ins and care flags | Optional | Weekly + on demand | Flags care, never prescribes |
 | `meal-planner` | Weekly menus, recipes, shopping lists with an ingredient audit | Optional | Weekly | Never orders or buys |
 | `price-watch` | Daily price checks on tracked items | Optional | Daily | Surfaces qualified hits only; never buys |
+| `meeting-prep` | Sourced briefs for the day's meetings; turns post-meeting notes into decisions, action items and wiki submissions | Optional | Daily (weekdays) + on demand | Read-only calendar; never sends invites or messages |
+| `project-tracker` | Working record per project; daily stale scan and weekly status digest | Optional | Daily scan + weekly + on demand | Suggests kills and parks, never applies them; lifecycle changes only on the principal's word |
 
 ## Installed subagents
 
-*(Updated by `/new-subagent` and by the init script.)*
+*(The framework's init script, `init_workspace.py`, adds a row for every module it installs, core and optional, including modules added later with `--update-config`. `/new-subagent` adds a row for each subagent it creates. "Thread mode: Supported" means the module can run as its own thread; whether you start one is up to you.)*
 
 | Name | Domain | Thread mode | Status |
 |------|--------|-------------|--------|

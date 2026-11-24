@@ -8,8 +8,8 @@ Examples below are fictional and only show the format.
 
 *(Filled in with {{PRINCIPAL_NAME}} during setup. The finance reviewer cross-checks every review against this section.)*
 
-- **Horizon:** <e.g. 15+ years>
-- **Risk posture:** <e.g. growth-tilted, accepts high volatility for asymmetric upside>
+- **Horizon:** <horizon, in years>
+- **Risk posture:** <risk posture, in the principal's own words>
 - **Known blind spots:** <what the profile tends to miss>
 - **Target allocation:** <buckets and weights, or "none set">
 - **Reserve floor:** <amount or months of expenses>

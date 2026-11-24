@@ -61,11 +61,13 @@ modules/<slug>/
 
 Core modules live directly in `template/subagents/<slug>/` and `template/.claude/agents/<slug>.md`, with the same file set.
 
-Placeholders used in module files: `{{AGENT_NAME}}`, `{{AGENT_SHORT}}`, `{{PRINCIPAL_NAME}}`, `{{WORKSPACE_PATH}}`, `{{TIMEZONE}}`. The init script substitutes them from `config.toml`.
+Placeholders most used in module files: `{{AGENT_NAME}}`, `{{AGENT_SHORT}}`, `{{AGENT_SHORT_LOWER}}`, `{{PRINCIPAL_NAME}}`, `{{WORKSPACE_PATH}}`, `{{TIMEZONE}}`. The init script substitutes these and every other key listed in `config.example.toml` (plus `{{TODAY}}` and `{{YEAR}}`) from `config.toml`. Files in `docs/` are copied into the workspace verbatim, without substitution.
 
 ## Adding a module
 
-Inside an instantiated workspace, run `/new-subagent`. It walks through identity, scope, rules, tools and schedule, writes the files above, wires `.claude/agents/<slug>.md`, and lints the result.
+To install a framework module into an existing workspace, add its slug to `[modules] enabled` in `config.toml` and run `bin/init_workspace.py --config config.toml --dest <workspace> --update-config`. It copies the module's files (never overwriting one that exists) and adds its rows to `HEARTBEAT.md` and `subagents/README.md`.
+
+To design a new one inside an instantiated workspace, run `/new-subagent`. It walks through identity, scope, rules, tools and schedule, writes the files above, wires `.claude/agents/<slug>.md`, and lints the result.
 
 To add one to the framework itself so others can install it:
 
@@ -77,5 +79,6 @@ To add one to the framework itself so others can install it:
 6. **Write a README in every output folder** with a file template.
 7. **Write `agent.md`.** Frontmatter: `name` (= slug), a generic `description` that says when to invoke it, and `tools` (least privilege; read-only MCP tool names noted for install). Body: bootstrap list using `{{WORKSPACE_PATH}}/subagents/<slug>/...`, task shapes, non-negotiables, return value, and the "you are not in conversation" close.
 8. **Decide on thread mode.** Only for domains the principal will want to talk to directly. If yes, add `outbox.md` and the two-modes section to `agent.md`.
-9. **Write `MODULE.md`** and add a row to the catalog above.
-10. **Scrub.** No real names, accounts, places, numbers or history from your own deployment. Run a grep for your own identifiers before committing.
+9. **Write `MODULE.md`** and add a row to the catalog above and to the Modules table in `template/subagents/README.md` (init builds each installed module's "Installed subagents" row from that table plus the `Thread mode:` line in `MODULE.md`).
+10. **Add its dispatch row(s)** if it runs on a schedule: one `module:<slug> | Task | Target time | key | Window | Dispatch |` line per scheduled trigger in the commented "Optional module rows" block of `template/HEARTBEAT.md`. Init moves those lines into the dispatch table when the module is enabled.
+11. **Scrub.** No real names, accounts, places, numbers or history from your own deployment. Run a grep for your own identifiers before committing.

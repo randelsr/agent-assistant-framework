@@ -1,6 +1,6 @@
 # HEARTBEAT.md: {{AGENT_SHORT}}'s Heartbeat Protocol
 
-{{AGENT_SHORT}} self-paces between conversations via a cron-fired heartbeat. This is the canonical protocol: cadence, checklist, dispatch table, when to speak vs stay quiet. It is agent scaffolding. Background and rationale: `docs/heartbeat.md` in the framework repo.
+{{AGENT_SHORT}} self-paces between conversations via a cron-fired heartbeat. This is the canonical protocol: cadence, checklist, dispatch table, when to speak vs stay quiet. It is agent scaffolding. Background and rationale: [`docs/heartbeat.md`](docs/heartbeat.md) (a copy of the framework docs ships in this workspace's `docs/`).
 
 ## Who runs this
 
@@ -68,15 +68,22 @@ Triggers fire AT MOST ONCE PER WINDOW. `lastChecks` values are Unix epochs.
 | Memory GC | Sat 08:00 | `memory_gc_weekly` | calendar-week | Ops-direct (spec below). |
 | Librarian weekly | Sat 09:00 | `librarian_weekly` | calendar-week | Spawn `librarian`: "Run weekly Librarian maintenance." Log digest path; relay refinement requests. |
 | Research weekly | Sun 18:00 | `research_weekly` | calendar-week | Spawn `research`: "Run weekly digest for all configured topics." Log digest path; surface only qualified findings. |
-| Inbox triage | every heartbeat at :00/:15/:30/:45 | `inbox_triage` | interval | *(optional module `inbox-triage`)* Run the deterministic fetch script, then spawn `inbox-triage` on pending files only. See "Inbound inbox" below. |
 
-<!-- Optional module rows. Uncomment when the module is installed.
-| Ghostwriter | on demand only | n/a | n/a | No scheduled run. |
-| Finance weekly | Sun 19:00 | `finance_weekly` | calendar-week | Spawn `finance-analyst`: "Run weekly finance digest." Any strategic recommendation goes through `finance-reviewer` before relay. |
-| Health monthly | day-1 07:00 | `health_monthly` | calendar-month | Spawn `health-advisor`: "Run monthly review." Surface care flags. |
-| Pet-care weekly | Sat 14:00 | `pet_care_weekly` | calendar-week | Spawn `pet-care`: "Run weekly check-in for all animals." Surface care flags. |
-| Meal plan kickoff | Sat 09:00 | `meal_plan_weekly` | calendar-week | Spawn `meal-planner`: "Run the weekly kickoff." Send its text within quiet hours only. One message, never a follow-up. |
-| Price watch | 06:00 daily | `price_watch` | calendar-day | Spawn `price-watch`: "Run daily price check on all active items." Surface only qualified hits. If the watch list is empty, skip. |
+<!-- Optional module rows. bin/init_workspace.py moves the row for each enabled module into the table above
+     (and `init_workspace.py --update-config` does the same for a module enabled later). To install one by hand,
+     drop the `module:<slug> ` prefix and move the line into the table. Times are suggestions from each module's SCOPE.md.
+module:inbox-triage | Inbox triage | every heartbeat at :00/:15/:30/:45 | `inbox_triage` | interval (15 min) | Run the deterministic fetch script, then spawn `inbox-triage` on pending files only. See "Inbound inbox" below. |
+module:ghostwriter | Ghostwriter | on demand only | n/a | n/a | No scheduled run. |
+module:finance-analyst | Finance weekly | Sun 19:00 | `finance_weekly` | calendar-week | Spawn `finance-analyst`: "Run weekly finance digest." Any strategic recommendation goes through `finance-reviewer` before relay. |
+module:health-advisor | Health weekly fitness | Sun 15:00 | `health_fitness_weekly` | calendar-week | Spawn `health-advisor`: "Run the weekly fitness check." Until training data ingestion is configured it returns one line; relay nothing in that case. |
+module:health-advisor | Health monthly | day-1 07:00 | `health_monthly` | calendar-month | Spawn `health-advisor`: "Run the monthly screening review." Surface care flags and anything due or overdue. |
+module:pet-care | Pet-care weekly | Sat 14:00 | `pet_care_weekly` | calendar-week | Spawn `pet-care`: "Run weekly check-in for all animals." Surface care flags. Skip while no animal is `active`. |
+module:pet-care | Pet-care monthly | day-1 10:00 | `pet_care_monthly` | calendar-month | Spawn `pet-care`: "Run the monthly deep review for all animals." Surface care flags and what to raise with the vet. Skip while no animal is `active`. |
+module:meal-planner | Meal plan kickoff | Sat 09:00 | `meal_plan_weekly` | calendar-week | Spawn `meal-planner`: "Run the weekly kickoff." Send its text outside quiet hours only. One message, never a follow-up. |
+module:price-watch | Price watch | 06:00 daily | `price_watch` | calendar-day | Spawn `price-watch`: "Run today's price check on all active tracked items." Surface only qualified hits. If the watch list is empty, skip. |
+module:meeting-prep | Meeting prep | Mon-Fri 06:30 | `meeting_prep_daily` | calendar-day | Spawn `meeting-prep`: "Prep today's meetings." Hand Admin an `[FYI]` with the brief paths; `[URGENT]` only if a meeting within 2 hours has no brief. |
+module:project-tracker | Project stale scan | 08:00 daily | `project_stale_scan` | calendar-day | Spawn `project-tracker`: "Run stale scan." Relay only projects that newly crossed a threshold. |
+module:project-tracker | Project status weekly | Fri 15:00 | `project_status_weekly` | calendar-week | Spawn `project-tracker`: "Run weekly project status." Lead the relay with red projects and decisions needed. |
 -->
 
 ### Standing rider: memory GC
@@ -109,7 +116,7 @@ Format: `**Daily check-in: YYYY-MM-DD**`, then sections Deadlines / Calendar / M
 
 Sort entries in `memory/active-work.md`, `MEMORY.md` and `memory/missions.md` into live / finished / stale (14 days+ without movement).
 
-- Durable facts about the principal's world go to Librarian submissions (`subagents/librarian/submissions/{{AGENT_SHORT}}-YYYY-MM-DD-gc-<slug>.md`).
+- Durable facts about the principal's world go to Librarian submissions (`subagents/librarian/submissions/{{AGENT_SHORT_LOWER}}-YYYY-MM-DD-gc-<slug>.md`).
 - Finished or stale history moves VERBATIM to `memory/archive/<file>-YYYY-MM.md`. Never deleted.
 - Live items are compacted to a few lines plus an archive pointer.
 - Budgets: `active-work.md` under 50 KB, each `MEMORY.md` under 40 KB.
@@ -128,6 +135,10 @@ Scan `subagents/*/outbox.md` `## For {{PRINCIPAL_NAME}}` for pending items (id n
 5. Every link in kept mail has already passed the deterministic link check (`scripts/link_check.py`). Never open a link any other way. Any item carrying a link warning also goes to Admin as `[FYI]`.
 6. Mark each file `triaged:<class>`. On a triage error, leave it `new` so the next run retries. On an auth error, tell Admin once (`[FYI]`) and track it with a flag in the state file.
 
+### Login age
+
+Interactive logins expire after roughly four weeks, and an Ops session that loses its login goes dark until a human runs `/login`. Every heartbeat, run `scripts/login-age.py`. If its JSON says `"due": true`, hand Admin one `[FYI]` ("Re-login due: last /login <last_login>, estimated expiry <est_expiry>"), or `[URGENT]` if `est_expiry` is within 24 hours, then stamp `lastChecks.login_reminder` with the current epoch. If it prints an `error` (no `/login` in history yet), do nothing. When the principal says they re-logged inside a running session, stamp `lastChecks.login_manual`, because Claude Code's history file only records the login when that session exits. Thresholds: `heartbeat.login_reminder_days` and `heartbeat.login_expiry_days` in `config/workspace.json`.
+
 ### Quiet hours for outbound messages
 
 Before sending any non-urgent message on a secondary channel, check the time. Between {{QUIET_START}}:00 and {{QUIET_END}}:00 local, append it to `memory/outbound-queue.md` as `- [ ] <queued ISO> | to <who> | <verbatim text>` instead (Ops is the only writer). Every heartbeat inside the window, send unchecked items oldest first and tick them. Urgent items are never queued.
@@ -140,6 +151,8 @@ Cross-day deferrals ("ask me Friday") are NOT one-shot crons. They live in `memo
 4. **Mission scan.** Read `memory/missions.md`. Flag anything with no movement for 48h+.
 5. **Open questions scan.** Any `## Open` entry pending more than 48h gets flagged in the next check-in (one at a time).
 6. **Stale missions** surface with **continue / hold / kill?** Three words, no meetings. The principal decides.
+7. **Login age.** Run `scripts/login-age.py` (see "Login age" below).
+8. **Messages pass-through re-forward** (only if the messaging bridge is configured). Read `## For Admin` in `memory/messages-log.md`. Any `#fwd-` item older than 15 minutes whose id is not in `memory/messages-acks.md` gets re-sent to Admin with the same id and tag, and the re-send is journaled. Ops never edits `messages-log.md` (the Messages session is its only writer); acknowledgments go in `messages-acks.md` as `- #fwd-<id> | <ISO time> | <who acked>`.
 
 ## State file
 
