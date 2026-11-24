@@ -240,7 +240,7 @@ Route by lens: *who is the subject?*
 | The principal's rule for how the agent behaves | `USER.md` |
 | How to use a Claude skill | `skills/<name>/SKILL.md` (outside this workspace) |
 | Local config, accounts, device names, tooling specifics | `TOOLS.md` |
-| Secrets (API keys, tokens, OAuth credentials) | OS keychain; slot pointer in `TOOLS.md`. **Never in plaintext.** Convention: service `{{AGENT_SHORT}}/<purpose>`, account `{{OS_USER}}`. |
+| Secrets (API keys, tokens, OAuth credentials) | OS keychain; slot pointer in `TOOLS.md`. **Never in plaintext.** Convention: service `{{AGENT_SHORT_LOWER}}/<purpose>`, account `{{OS_USER}}`. |
 | The agent's lesson, opinion, evolved heuristic, mistake | `MEMORY.md` |
 | Today's events, decisions, running notes | `raw/journal/YYYY-MM-DD.md` |
 | A voice memo or recording | `raw/voice/` plus a local transcript, then route the *content* by its own lens |

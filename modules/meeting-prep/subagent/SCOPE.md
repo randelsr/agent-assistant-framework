@@ -22,7 +22,7 @@ Invoked by {{AGENT_NAME}} via the Agent tool with `subagent_type: meeting-prep`:
 |---|---|
 | Calendar (read-only) | Title, time, attendees, description, attachments list, recurrence |
 | `wiki/people/` | Who each attendee is to {{PRINCIPAL_NAME}}, history, preferences |
-| `wiki/clients/`, `wiki/businesses/`, organization pages | The organizations in the room |
+| `wiki/organizations/`, `wiki/stakeholders/`, organization pages | The organizations in the room |
 | `wiki/initiatives/` | The projects the meeting touches |
 | `raw/journal/` (last 14 days) | Recent context and commitments |
 | `subagents/meeting-prep/briefs/` | Previous briefs and debriefs with the same people |

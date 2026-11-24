@@ -18,17 +18,17 @@ macOS convention:
 
 | Field | Value |
 |-------|-------|
-| Service name format | `{{AGENT_SHORT}}/<purpose>` (e.g. `{{AGENT_SHORT}}/github-pat`) |
+| Service name format | `{{AGENT_SHORT_LOWER}}/<purpose>` (e.g. `{{AGENT_SHORT_LOWER}}/github-pat`) |
 | Account | `{{OS_USER}}` |
-| Add / rotate | `security add-generic-password -U -s "{{AGENT_SHORT}}/<name>" -a "{{OS_USER}}" -w` (prompts for the value; avoids shell history) |
-| Retrieve | `security find-generic-password -s "{{AGENT_SHORT}}/<name>" -w` |
-| Delete | `security delete-generic-password -s "{{AGENT_SHORT}}/<name>" -a "{{OS_USER}}"` |
+| Add / rotate | `security add-generic-password -U -s "{{AGENT_SHORT_LOWER}}/<name>" -a "{{OS_USER}}" -w` (prompts for the value; avoids shell history) |
+| Retrieve | `security find-generic-password -s "{{AGENT_SHORT_LOWER}}/<name>" -w` |
+| Delete | `security delete-generic-password -s "{{AGENT_SHORT_LOWER}}/<name>" -a "{{OS_USER}}"` |
 
 On Linux use `secret-tool` (libsecret) with the same service naming; on Windows use Credential Manager.
 
 **When a new secret arrives:**
 
-1. Add it to the keychain under `{{AGENT_SHORT}}/<purpose>`.
+1. Add it to the keychain under `{{AGENT_SHORT_LOWER}}/<purpose>`.
 2. Add a row to the slot inventory below (service, account, purpose, retrieval command). Never the value.
 3. Rotation: re-run the add with `-U`. No file change needed.
 4. Decommission: delete from the keychain AND remove the row.

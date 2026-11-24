@@ -21,7 +21,7 @@ Invoked by {{AGENT_NAME}} via the Agent tool with `subagent_type: project-tracke
 | Source | Used for |
 |---|---|
 | `subagents/project-tracker/projects/*.md` | The tracker records (primary) |
-| `wiki/initiatives/`, `wiki/clients/` | Institutional context, phase, priority |
+| `wiki/initiatives/`, `wiki/projects/` | Institutional context, phase, priority |
 | `raw/journal/` (since the last run) | Evidence of movement and new commitments |
 | `memory/missions.md`, `memory/active-work.md` | {{AGENT_NAME}}'s in-flight missions (read-only) |
 | `subagents/meeting-prep/briefs/` (if installed) | Debrief action items |

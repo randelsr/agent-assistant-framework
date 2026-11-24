@@ -70,7 +70,12 @@ OPTIONAL_DEFAULTS = {
     "conversations": {"retention_days": 7},
     "link_check": {"extra_brands": {}, "extra_risky_suffixes": []},
     "wiki": {"type_by_dir": {}},
-    "wiki_lint": {"exclude": [], "orphan_exclude": [], "intentional_broken": ["memory/heartbeat-state.json", "memory/inbox-filter/allowlist.json"], "short_basenames": []},
+    "wiki_lint": {"exclude": [], "orphan_exclude": [], "intentional_broken": ["memory/heartbeat-state.json", "memory/inbox-filter/allowlist.json",
+                                                         # created at runtime by optional modules
+                                                         "wiki/health", "wiki/health/screenings.md", "wiki/fitness",
+                                                         "wiki/topics", "wiki/concepts/investment-thesis.md",
+                                                         "subagents/finance-analyst/data-snapshot.json",
+                                                         "memory/text-thread.md"], "short_basenames": []},
 }
 
 
