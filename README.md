@@ -23,6 +23,17 @@ Plus:
 
 See [docs/architecture.md](docs/architecture.md) for the full picture.
 
+## The wiki
+
+**What it's for.** The wiki is the agent's long-term knowledge of you: your role, your projects, the people you work with, your frameworks and decisions, your history and plans. A chat session forgets everything when it ends, and the wiki is how the agent doesn't. Every session starts from `wiki/index.md` and drills into whatever the conversation needs, so the agent answers from what it already knows about you instead of asking you to explain again.
+
+**How it gets built and maintained.** You don't write it. You talk to the agent, send it documents, and correct it, and the wiki grows out of that:
+- When something worth keeping comes up, the agent (or a subagent) proposes a page change as a submission to the Librarian.
+- The Librarian is the only writer. It merges each submission into the right page, keeps `index.md` and the change log current, and never deletes: superseded content is archived.
+- Every week the heartbeat runs the Librarian, sweeps lasting facts out of the journal and agent memory into submissions, and lints the wiki for contradictions, stale claims and orphan pages.
+
+**It's written for the agent, not for you.** Pages are optimized for an agent to find and trust facts quickly: dense, cross-linked, frontmatter on every page, sources and dates kept next to claims, nothing deleted. You can read it (it opens in any Markdown viewer or Obsidian), but it isn't meant to be pleasant reading and it isn't meant to be hand-edited. If something in it is wrong, tell the agent; it routes the correction through the Librarian so the page, the index and the log stay consistent. A hand edit skips all of that and can be silently overwritten or contradicted by the next integration.
+
 ## Modules
 
 `librarian` and `research` are always installed. The rest are optional; pick them in `config.toml`.

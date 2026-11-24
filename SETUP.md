@@ -49,7 +49,7 @@ What each file does:
   - what always needs your confirmation
   - your formatting and voice preferences
   - any standing "never do X" rules
-- **`wiki/people/principal.md`**: who you are: role, responsibilities, current priorities, key people. A work profile should also seed `wiki/stakeholders/` and `wiki/projects/`.
+- **`wiki/people/principal.md`**: who you are: role, responsibilities, current priorities, key people. A work profile should also seed `wiki/stakeholders/` and `wiki/projects/`. Tell the agent these things in conversation and let it write the pages; this first seeding is the only time the wiki gets written outside the Librarian. After bootstrap, don't edit `wiki/` by hand (see "The wiki" in the README).
 - **`wiki/concepts/voice.md`**: needed if you installed `ghostwriter`. Paste 3 to 5 samples of your writing.
 
 ## 3. Two sessions: Admin and Ops
@@ -116,7 +116,7 @@ Record the slot name, never the value, in `TOOLS.md`.
 
 Talk to Admin. It reads the bootstrap files every session, logs the day in `raw/journal/`, routes facts to the wiki through the Librarian, and delegates domain work to subagents.
 
-Run a lint when you like ("lint the wiki"). The heartbeat runs a weekly memory cleanup and surfaces missions that haven't moved in 48 hours or more.
+You don't maintain the wiki. When something worth keeping comes up, the agent submits it to the Librarian, which writes it. If a wiki fact is wrong, tell the agent rather than fixing the page yourself. Run a lint when you like ("lint the wiki"). The heartbeat runs a weekly memory cleanup and surfaces missions that haven't moved in 48 hours or more.
 
 When the agent gets something wrong, tell it the rule. Rules you state go in `USER.md`. Lessons the agent learns go in its `MEMORY.md`. That loop is what makes it better over time.
 

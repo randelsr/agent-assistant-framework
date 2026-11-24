@@ -31,6 +31,8 @@ The workspace separates content by *who it is about*. The layers never mix.
 | Subagents | Each domain specialist's own identity, scope, rules, memory, outputs | Each subagent, inside its own folder | Curated per subagent |
 | Raw | Sources: journal, documents, transcripts, records | The main agent (append only) | Immutable once written |
 
+**The wiki is the agent's long-term knowledge of the principal, and it's written for the agent.** It lets every session start from what is already known instead of re-asking. Pages are optimized for retrieval and trust (dense, cross-linked, frontmatter everywhere, sources and dates next to claims, nothing deleted), not for human reading. The principal can read it but shouldn't hand-edit it: corrections go to the agent, which routes them through the Librarian so pages, `index.md` and `log.md` stay consistent. After the bootstrap seeding, the wiki grows only from submissions (see "The Librarian and the submissions inbox" below and the weekly heartbeat sweep).
+
 **The routing question is always "who is the subject?"** A lesson the agent learned goes in `MEMORY.md`. A rule the principal set for the agent goes in `USER.md`. A fact about the principal's project goes to the wiki. Today's events go in the journal. Confusing a file's *role* with its *content* is the most common early mistake (for example, giving the agent its own page in `wiki/people/`).
 
 ### Schema files

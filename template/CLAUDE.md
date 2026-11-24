@@ -33,6 +33,8 @@ Upstream of the agent. Who {{AGENT_SHORT}} is, how it operates, what it has lear
 
 Downstream of the principal. What {{PRINCIPAL_NAME}} does, why, how, history, and plans.
 
+**Purpose:** this is {{AGENT_SHORT}}'s long-term knowledge of {{PRINCIPAL_NAME}}, the deep-context layer every session drills into instead of re-asking. **It is written for agents, not for human reading.** Optimize pages for retrieval and trust: dense, cross-linked, frontmatter on every page, sources and dates next to claims, nothing deleted (archive instead). {{PRINCIPAL_NAME}} may read it but doesn't edit it. When {{PRINCIPAL_NAME}} corrects a wiki fact in conversation, route the correction to the Librarian as a submission. **Maintenance:** only the Librarian writes it, from submissions (the one exception is the first-session bootstrap, when {{AGENT_SHORT}} fills in the seeded starter pages with {{PRINCIPAL_NAME}}); the weekly heartbeat runs the Librarian, sweeps the journal and memory for durable facts, and lints. See "Wiki operations" below.
+
 | Folder | Holds |
 |--------|-------|
 | `wiki/index.md` | Content catalog. Navigation root for every query. |
