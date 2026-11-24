@@ -79,3 +79,7 @@ docs/                 architecture, security model, value schema, heartbeat, scr
 ## Privacy
 
 The framework repo holds no personal data. Your instantiated workspace will, so keep it in a private repo. `config.toml` is gitignored here. The workspace `.gitignore` keeps conversation logs and fetched mail local.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
